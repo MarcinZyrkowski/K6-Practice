@@ -4,20 +4,19 @@ import { sleep } from 'k6';
 export const options = {
   // schema
   //
-  //                 ..................
-  //   avg load --- /.                . \
-  //               / .                .  \
-  //              /  .                .   \
-  //         time 0 4s               44s 48s
+  //         .............................................
+  //        /.                                           . \
+  //       / .                                           .  \
+  //  time 0 4s                                         5m4s 5m8s
   // stages are used define different load
   stages: [
     {
-      duration: '4s', // ramping up users up to 100
-      target: 100 // much more users than avarage-load
+      duration: '4s', // ramping up users up to 30
+      target: 30
     },
     {
-      duration: '40s', // staying with 100 users for 40s
-      target: 100
+      duration: '5m', // staying with 30 users for 5m (endurance test)
+      target: 30
     },
     {
       duration: '4s',  // scale down to 0
