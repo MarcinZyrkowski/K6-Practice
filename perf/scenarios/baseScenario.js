@@ -3,8 +3,14 @@ import { sleep } from 'k6';
 import { check } from 'k6';
 
 export const options = {
-  vus: 1, 
-  duration: '1s',
+  vus: 10, 
+  duration: '5s',
+  // defining thresholds
+  thresholds: {
+    http_req_duration: ['p(90)<200'], // 95% of requests should take less or equal than 500
+    http_req_failed: ['rate<0.05'], // only 5% of tests can fail
+    http_reqs: ['count>10']
+  }
 };
 
 // standardChecks is an object
