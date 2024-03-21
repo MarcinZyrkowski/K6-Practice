@@ -1,7 +1,7 @@
 import http from 'k6/http';
 import { sleep } from 'k6';
 import { check } from 'k6';
-import { Counter } from 'k6/metrics';
+import { Counter, Trend } from 'k6/metrics';
 
 export const options = {
   vus: 5, 
@@ -12,12 +12,14 @@ export const options = {
     http_req_failed: ['rate<0.05'], // only 5% of tests can fail
     http_reqs: ['count>10'],
     checks: ['rate>=0.99'],
-    my_counter: ['count>5']
+    my_counter: ['count>5'],
+    response_time_news_page: ['p(95)<2000', 'p(99)<3000'] // p(99) works even if not displayed
   }
 };
 
 // creating onw metric of type Counter
 let myCounter = new Counter('my_counter');
+let newsPageResponseTime = new Trend('response_time_news_page');
 
 // standardChecks is an object
 export const standardChecks = {
@@ -26,7 +28,7 @@ export const standardChecks = {
 }
 
 export default function () {
-  const res = http.get('http://test.k6.io');
+  let res = http.get('http://test.k6.io');
   // defining logic to custom metric
   myCounter.add(1);
   sleep(1);
@@ -38,4 +40,8 @@ export default function () {
 
   // res is dynamic value
   check(res, standardChecks);
+
+  res = http.get('https://test.k6.io/news.php');
+  newsPageResponseTime.add(res.timings.duration);
+  sleep(1);
 }
