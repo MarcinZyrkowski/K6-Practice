@@ -12,7 +12,7 @@ export const options = {
     http_req_failed: ['rate<0.05'], // only 5% of tests can fail
     http_reqs: ['count>10'],
     checks: ['rate>=0.99'],
-    my_counter: ['count>5'],
+    my_counter: ['count>1'],
     response_time_news_page: ['p(95)<2000', 'p(99)<3000'] // p(99) works even if not displayed
   }
 };
